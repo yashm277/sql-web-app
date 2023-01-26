@@ -2,41 +2,102 @@
 
 <html>
   <head>
+    <style>
+      .submit {
+        background-color: greenyellow;
+      }
+      .clear {
+        background-color: rgb(246, 106, 106);
+      }
+      .showtasks {
+        background-color: rgb(106, 204, 246);
+      }
+    </style>
     <script type="text/javascript">
-      var db = openDatabase("mydb", "1.0", "Test DB", 2 * 1024 * 1024);
+      var db = openDatabase("tetsug", "1.0", "Test DB", 2 * 1024 * 1024);
       var msg;
+      var count = 1;
 
-      db.transaction(function (tx) {
-        tx.executeSql("CREATE TABLE IF NOT EXISTS LOGS (id unique, log)");
-        tx.executeSql('INSERT INTO LOGS (id, log) VALUES (1, "foobar")');
-        tx.executeSql('INSERT INTO LOGS (id, log) VALUES (2, "logmsg")');
-        msg = "<p>Log message created and row inserted.</p>";
-        document.querySelector("#status").innerHTML = msg;
-      });
+      //   function addTask() {
+      //     console.log("add task");
+      //     db.transaction(function (tx) {
+      //       tx.executeSql("CREATE TABLE IF NOT EXISTS LOGS (id unique, log)");
+      //       tx.executeSql('INSERT INTO LOGS (id, log) VALUES (1, "foobar")');
+      //       tx.executeSql('INSERT INTO LOGS (id, log) VALUES (2, "logmsg")');
+      //       msg = "<p>Log message created and row inserted.</p>";
+      //       document.querySelector("#status").innerHTML = msg;
+      //     });
+      //   }
+      //   function showTasks() {
+      //     console.log("hello");
+      //     db.transaction(function (tx) {
+      //       tx.executeSql(
+      //         "SELECT * FROM LOGS",
+      //         [],
+      //         function (tx, results) {
+      //           var len = results.rows.length,
+      //             i;
+      //           msg = "<p>Found rows: " + len + "</p>";
+      //           document.querySelector("#status").innerHTML += msg;
 
-      db.transaction(function (tx) {
-        tx.executeSql(
-          "SELECT * FROM LOGS",
-          [],
-          function (tx, results) {
-            var len = results.rows.length,
-              i;
-            msg = "<p>Found rows: " + len + "</p>";
-            document.querySelector("#status").innerHTML += msg;
+      //           for (i = 0; i < len; i++) {
+      //             msg = "<p><b>" + results.rows.item(i).log + "</b></p>";
+      //             document.querySelector("#status").innerHTML += msg;
+      //           }
+      //         },
+      //         null
+      //       );
+      //     });
+      //   }
+      function addTask() {
+        console.log("add task");
+        db.transaction(function (tx) {
+          var x = document.getElementById("myText").value;
+          tx.executeSql("CREATE TABLE IF NOT EXISTS TASKS (id unique, log)");
+          tx.executeSql('INSERT INTO TASKS (id, log) VALUES (3, "bye"})');
+          console.log("added", count, x);
 
-            for (i = 0; i < len; i++) {
-              msg = "<p><b>" + results.rows.item(i).log + "</b></p>";
+          count = count + 1;
+          //   tx.executeSql('INSERT INTO TASKS (id, log) VALUES (2, "logmsg")');
+          msg = "<p>Log message created and row inserted.</p>";
+          document.querySelector("#status").innerHTML = msg;
+        });
+      }
+      function showTasks() {
+        console.log("hello");
+        db.transaction(function (tx) {
+          tx.executeSql(
+            "SELECT * FROM TASKS",
+            [],
+            function (tx, results) {
+              var len = results.rows.length,
+                i;
+              msg = "<p>Found rows: " + len + "</p>";
               document.querySelector("#status").innerHTML += msg;
-            }
-          },
-          null
-        );
-      });
+
+              for (i = 0; i < len; i++) {
+                msg = "<p><b>" + results.rows.item(i).log + "</b></p>";
+                document.querySelector("#status").innerHTML += msg;
+              }
+            },
+            null
+          );
+        });
+      }
     </script>
   </head>
 
   <body>
     <h1>Web SQL Database - Simple CRUD Application</h1>
-    <div id="status" name="status">Status Message</div>
+    <div class="input">
+      <form>
+        <label for="fname">Task name:</label><br />
+        <input type="text" placeholder="task name" id="myText" /><br />
+      </form>
+    </div>
+    <button class="submit" onclick="addTask()">Add task</button>
+    <button class="clear" onclick="clearInput()">Clear input</button>
+    <button class="showtasks" onclick="showTasks()">Show tasks</button>
+    <div id="status" name="status">Click to display the list of tasks</div>
   </body>
 </html>
